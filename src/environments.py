@@ -125,3 +125,5 @@ class LatentWorld(BaseWorld):
     def set_representations(self, representations):
         for rep in self.action_reps:
             rep.set_thetas(representations.pop(0))
+
+
