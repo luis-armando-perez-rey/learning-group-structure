@@ -45,8 +45,10 @@ def plot_state(obs, ax):
     return ax
 
 def plot_reconstructions(obs_env, encoder, decoder, step):
-    print("Number of steps", obs_env.state_space[0] // step)
-    fig, axes = plt.subplots(obs_env.state_space[0] // step + 1, obs_env.state_space[1] // step + 1, figsize=(10, 10))
+    image_indexes0 = range(0, obs_env.state_space[0], step)
+    image_indexes1 = range(0, obs_env.state_space[1], step)
+    print("Number of images {} x {}".format(len(image_indexes0),len(image_indexes1)))
+    fig, axes = plt.subplots(len(image_indexes0), len(image_indexes1), figsize=(10, 10))
     for num_i, i in enumerate(range(0, obs_env.state_space[0], step)):
         for num_j, j in enumerate(range(0, obs_env.state_space[1], step)):
             obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
@@ -58,10 +60,13 @@ def plot_reconstructions(obs_env, encoder, decoder, step):
 
 
 def plot_environment(obs_env, step):
-    print("Number of steps", obs_env.state_space[0] // step)
-    fig, axes = plt.subplots(obs_env.state_space[0] // step + 1, obs_env.state_space[1] // step + 1, figsize=(10, 10))
-    for num_i, i in enumerate(range(0, obs_env.state_space[0], step)):
-        for num_j, j in enumerate(range(0, obs_env.state_space[1], step)):
+
+    image_indexes0 = range(0, obs_env.state_space[0], step)
+    image_indexes1 = range(0, obs_env.state_space[1], step)
+    print("Number of images {} x {}".format(len(image_indexes0),len(image_indexes1)))
+    fig, axes = plt.subplots(len(image_indexes0), len(image_indexes1), figsize=(10, 10))
+    for num_i, i in enumerate(image_indexes0):
+        for num_j, j in enumerate(image_indexes1):
             obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
 
             plot_state(obs_x.permute(2, 1, 0).detach().numpy(), axes[num_i][num_j])
