@@ -51,6 +51,7 @@ def plot_reconstructions(obs_env, encoder, decoder, step):
     fig, axes = plt.subplots(len(image_indexes0), len(image_indexes1), figsize=(10, 10))
     for num_i, i in enumerate(range(0, obs_env.state_space[0], step)):
         for num_j, j in enumerate(range(0, obs_env.state_space[1], step)):
+
             obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
             obs_z = encoder(obs_x)
             obs_x_recon = decoder(obs_z)

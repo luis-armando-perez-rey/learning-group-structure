@@ -98,4 +98,4 @@ class Decoder(nn.Module):
         x = self.up1(x)
         x = self.conv3(x)
 
-        return torch.sigmoid(x).squeeze()
+        return torch.sigmoid(x).squeeze(dim = 0)
