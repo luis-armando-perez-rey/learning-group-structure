@@ -2,7 +2,7 @@ import os
 import torch
 import numpy as np
 from abc import ABC, abstractmethod
-from src.representations import Representation
+from representations import Representation
 
 class BaseWorld(ABC):
 
