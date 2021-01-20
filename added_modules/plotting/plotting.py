@@ -34,3 +34,35 @@ def plot_action_distribution(lat_env, width=0.5):
 
         axs[0].set_ylabel(r"$\theta / 2\pi$", fontsize=15)
     return fig, axs
+
+
+def plot_state(obs, ax):
+    ax.imshow(obs)
+    ax.set_aspect('equal')
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    return ax
+
+def plot_reconstructions(obs_env, encoder, decoder, step):
+    print("Number of steps", obs_env.state_space[0] // step)
+    fig, axes = plt.subplots(obs_env.state_space[0] // step + 1, obs_env.state_space[1] // step + 1, figsize=(10, 10))
+    for num_i, i in enumerate(range(0, obs_env.state_space[0], step)):
+        for num_j, j in enumerate(range(0, obs_env.state_space[1], step)):
+            obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
+            obs_z = encoder(obs_x)
+            obs_x_recon = decoder(obs_z)
+
+            plot_state(obs_x_recon.permute(2, 1, 0).detach().numpy(), axes[num_i][num_j])
+    return fig, axes
+
+
+def plot_environment(obs_env, step):
+    print("Number of steps", obs_env.state_space[0] // step)
+    fig, axes = plt.subplots(obs_env.state_space[0] // step + 1, obs_env.state_space[1] // step + 1, figsize=(10, 10))
+    for num_i, i in enumerate(range(0, obs_env.state_space[0], step)):
+        for num_j, j in enumerate(range(0, obs_env.state_space[1], step)):
+            obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
+
+            plot_state(obs_x.permute(2, 1, 0).detach().numpy(), axes[num_i][num_j])
+    return fig, axes
