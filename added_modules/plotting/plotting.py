@@ -55,8 +55,11 @@ def plot_reconstructions(obs_env, encoder, decoder, step):
             obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
             obs_z = encoder(obs_x)
             obs_x_recon = decoder(obs_z)
-
-            plot_state(obs_x_recon.permute(2, 1, 0).detach().numpy(), axes[num_i][num_j])
+            reconstruction = obs_x_recon.permute(2, 1, 0).detach().numpy()
+            if reconstruction.shape[-1] != 3:
+                plot_state(reconstruction[:,:,0], axes[num_i][num_j])
+            else:
+                plot_state(reconstruction, axes[num_i][num_j])
     return fig, axes
 
 
@@ -69,6 +72,9 @@ def plot_environment(obs_env, step):
     for num_i, i in enumerate(image_indexes0):
         for num_j, j in enumerate(image_indexes1):
             obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
-
-            plot_state(obs_x.permute(2, 1, 0).detach().numpy(), axes[num_i][num_j])
+            obs_x = obs_x.permute(2, 1, 0).detach().numpy()
+            if obs_x.shape[-1] != 3:
+                plot_state(obs_x[:,:,0], axes[num_i][num_j])
+            else:
+                plot_state(obs_x, axes[num_i][num_j])
     return fig, axes
