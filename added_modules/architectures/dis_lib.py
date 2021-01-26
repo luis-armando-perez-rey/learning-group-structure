@@ -78,7 +78,7 @@ class Decoder(nn.Module):
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = torch.reshape(x, (-1, 4, 4, 64))
+        x = torch.reshape(x, (-1, 64, 4, 4))
         x = F.relu(self.deconv1(x))
         x = F.relu(self.deconv2(x))
         x = F.relu(self.deconv3(x))
