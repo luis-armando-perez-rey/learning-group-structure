@@ -39,7 +39,7 @@ class Encoder(nn.Module):
         self.conv4 = nn.Conv2d(conv_hid*2, conv_hid*2, conv_kernel, stride=conv_stride, padding=1)
 
 
-        final_size = np.product((conv_hid*2, image_size[0], image_size[1]))
+        final_size = np.product((conv_hid*2, 64//(2**4), 64//(2**4)))
         self.fc1 = nn.Linear(final_size, 256)
         self.fc2 = nn.Linear(256, z_dim)
 
