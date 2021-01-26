@@ -33,10 +33,10 @@ class Encoder(nn.Module):
                  conv_stride=(2, 2),):
         super().__init__()
 
-        self.conv1 = nn.Conv2d(n_channels, conv_hid, conv_kernel, stride=conv_stride)
-        self.conv2 = nn.Conv2d(conv_hid, conv_hid, conv_kernel, stride=conv_stride)
-        self.conv3 = nn.Conv2d(conv_hid, conv_hid*2, conv_kernel, stride=conv_stride)
-        self.conv4 = nn.Conv2d(conv_hid*2, conv_hid*2, conv_kernel, stride=conv_stride)
+        self.conv1 = nn.Conv2d(n_channels, conv_hid, conv_kernel, stride=conv_stride, padding=1)
+        self.conv2 = nn.Conv2d(conv_hid, conv_hid, conv_kernel, stride=conv_stride, padding=1)
+        self.conv3 = nn.Conv2d(conv_hid, conv_hid*2, conv_kernel, stride=conv_stride, padding=1)
+        self.conv4 = nn.Conv2d(conv_hid*2, conv_hid*2, conv_kernel, stride=conv_stride, padding=1)
 
 
         final_size = np.product((conv_hid*2, image_size[0], image_size[1]))
@@ -44,7 +44,7 @@ class Encoder(nn.Module):
         self.fc2 = nn.Linear(256, z_dim)
 
     def forward(self, x):
-        # x = x.unsqueeze(0)
+        x = x.unsqueeze(0)
         x = F.relu(self.conv1(x))
         x = F.relu(self.conv2(x))
         x = F.relu(self.conv3(x))
@@ -70,10 +70,10 @@ class Decoder(nn.Module):
 
         self.up1 = nn.Upsample(scale_factor=1)
 
-        self.deconv1 = nn.ConvTranspose2d(64, 64, conv_kernel, stride=conv_stride)
-        self.deconv2 = nn.ConvTranspose2d(64, 32, conv_kernel, stride=conv_stride)
-        self.deconv3 = nn.ConvTranspose2d(32, 32, conv_kernel, stride=conv_stride)
-        self.deconv4 = nn.ConvTranspose2d(32, n_channels, conv_kernel, stride=conv_stride)
+        self.deconv1 = nn.ConvTranspose2d(64, 64, conv_kernel, stride=conv_stride, padding=1)
+        self.deconv2 = nn.ConvTranspose2d(64, 32, conv_kernel, stride=conv_stride, padding=1)
+        self.deconv3 = nn.ConvTranspose2d(32, 32, conv_kernel, stride=conv_stride, padding=1)
+        self.deconv4 = nn.ConvTranspose2d(32, n_channels, conv_kernel, stride=conv_stride, padding=1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
