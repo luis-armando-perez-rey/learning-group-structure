@@ -18,8 +18,8 @@ class Encoder(nn.Module):
         self.conv2 = nn.Conv2d(conv_hid, conv_hid, conv_kernel, stride=conv_stride, padding=1)
         self.conv3 = nn.Conv2d(conv_hid, conv_hid*2, conv_kernel, stride=conv_stride, padding=1)
         self.conv4 = nn.Conv2d(conv_hid*2, conv_hid*2, conv_kernel, stride=conv_stride, padding=1)
-
-        self.fc1 = nn.Linear(64*4*4, 256)
+        final_size = np.product((conv_hid * 2, 64 // (2 ** 4), 64 // (2 ** 4)))
+        self.fc1 = nn.Linear(final_size, 256)
         self.fc2 = nn.Linear(256, z_dim)
 
     def forward(self, x):
