@@ -25,7 +25,7 @@ def calculate_pad_same(image_size, kernel_size, stride):
 class Encoder(nn.Module):
 
     def __init__(self,
-                 z_dim=4,
+                 n_out=4,
                  n_channels=3,
                  image_size=(64, 64),
                  conv_hid=64,
@@ -46,7 +46,7 @@ class Encoder(nn.Module):
 
         final_size = np.product((conv_hid, image_size[0], image_size[1]))
         self.fc1 = nn.Linear(final_size, conv_hid)
-        self.fc2 = nn.Linear(conv_hid, z_dim)
+        self.fc2 = nn.Linear(conv_hid, n_out)
 
     def forward(self, x):
         x = x.unsqueeze(0)

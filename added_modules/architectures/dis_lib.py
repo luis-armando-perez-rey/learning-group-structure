@@ -6,12 +6,12 @@ import torch.nn.functional as F
 class Encoder(nn.Module):
 
     def __init__(self,
-                 z_dim=4,
+                 n_out=4,
                  n_channels=3,
                  image_size=(64, 64),
                  conv_hid=32,
                  conv_kernel=(4, 4),
-                 conv_stride=(2, 2),):
+                 conv_stride=(2, 2), ):
         super().__init__()
 
         self.conv1 = nn.Conv2d(n_channels, conv_hid, conv_kernel, stride=conv_stride, padding=1)
@@ -20,7 +20,7 @@ class Encoder(nn.Module):
         self.conv4 = nn.Conv2d(conv_hid*2, conv_hid*2, conv_kernel, stride=conv_stride, padding=1)
         final_size = np.product((conv_hid * 2, 64 // (2 ** 4), 64 // (2 ** 4)))
         self.fc1 = nn.Linear(final_size, 256)
-        self.fc2 = nn.Linear(256, z_dim)
+        self.fc2 = nn.Linear(256, n_out)
 
     def forward(self, x):
         x = x.unsqueeze(0)
