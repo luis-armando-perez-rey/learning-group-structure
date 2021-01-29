@@ -65,7 +65,7 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
 
-    def __init__(self, image_size,
+    def __init__(self, image_size = (64,64),
                  n_in=4,
                  conv_hid=64,
                  conv_kernel=(3, 3),

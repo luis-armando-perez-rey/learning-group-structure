@@ -30,8 +30,6 @@ class Encoder(nn.Module):
     def forward(self, obs):
         if len(obs.shape) != 4:
             obs = obs.unsqueeze(0)
-        obs = obs.permute(0, 3, 1, 2)
-        obs = obs / 255
         obs = self.conv(obs)
         obs = obs.contiguous().view(obs.size(0), -1)
         return F.normalize(self.output(obs)).squeeze()
@@ -63,5 +61,5 @@ class Decoder(nn.Module):
         x = F.relu(self.fc2(x))
         batch_size = x.shape[0]
         x = x.reshape(batch_size, 32, 7, 7)
-        x = self.conv(x).permute(0, 2, 3, 1)
+        x = self.conv(x)
         return torch.sigmoid(x).squeeze()
