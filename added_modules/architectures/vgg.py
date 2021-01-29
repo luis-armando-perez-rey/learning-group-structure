@@ -44,7 +44,7 @@ class Encoder(nn.Module):
         self.conv3 = nn.Conv2d(conv_hid, conv_hid, conv_kernel, stride=conv_stride, padding=conv_pad)
         self.maxpool3 = nn.MaxPool2d(maxpool_kernel, None)
 
-        final_size = np.product((conv_hid, image_size[0], image_size[1]))
+        final_size = np.product((conv_hid, image_size[0] // (2 ** 3), image_size[1] // (2 ** 3)))
         self.fc1 = nn.Linear(final_size, conv_hid)
         self.fc2 = nn.Linear(conv_hid, n_out)
 
@@ -65,7 +65,7 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
 
-    def __init__(self, image_size = (64,64),
+    def __init__(self, image_size=(64, 64),
                  n_in=4,
                  conv_hid=64,
                  conv_kernel=(3, 3),
@@ -74,12 +74,12 @@ class Decoder(nn.Module):
                  ):
         super().__init__()
 
-        convdim = (conv_hid, image_size[0], image_size[1])
+        self.convdim = (conv_hid, image_size[0] // (2 ** 3), image_size[1] // (2 ** 3))
         self.fc1 = nn.Linear(n_in, conv_hid)
-        self.fc2 = nn.Linear(conv_hid, np.product(convdim))
+        self.fc2 = nn.Linear(conv_hid, np.product(self.convdim))
 
         conv_pad = calculate_pad_same(image_size, conv_kernel, conv_stride)
-        self.up1 = nn.Upsample(scale_factor=1)
+        self.up1 = nn.Upsample(scale_factor=2)
 
         self.conv1 = nn.Conv2d(conv_hid, conv_hid, conv_kernel, stride=conv_stride, padding=conv_pad)
         self.conv2 = nn.Conv2d(conv_hid, conv_hid, conv_kernel, stride=conv_stride, padding=conv_pad)
@@ -88,7 +88,7 @@ class Decoder(nn.Module):
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = torch.reshape(x, (-1, 64, 64, 64))
+        x = torch.reshape(x, (-1, self.convdim[0], self.convdim[1], self.convdim[2]))
         x = self.up1(x)
         x = F.relu(self.conv1(x))
         x = self.up1(x)
@@ -96,4 +96,4 @@ class Decoder(nn.Module):
         x = self.up1(x)
         x = self.conv3(x)
 
-        return torch.sigmoid(x).squeeze(dim = 0)
+        return torch.sigmoid(x).squeeze(dim=0)
