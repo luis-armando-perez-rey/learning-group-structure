@@ -105,7 +105,7 @@ class LatentWorld(BaseWorld):
         return self.state
 
     def step(self, action):
-        self.state = torch.mv(self.action_reps[action].get_matrix(), self.state)
+        self.state = torch.mv(self.action_reps[action].get_matrix(), self.state.to("cpu"))
         obs = self.get_observation()
         return obs
 
