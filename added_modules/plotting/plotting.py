@@ -44,7 +44,7 @@ def plot_state(obs, ax):
 
     return ax
 
-def plot_reconstructions(obs_env, encoder, decoder, step):
+def plot_reconstructions(obs_env, encoder, decoder, step, device):
     image_indexes0 = range(0, obs_env.state_space[0], step)
     image_indexes1 = range(0, obs_env.state_space[1], step)
     print("Number of images {} x {}".format(len(image_indexes0),len(image_indexes1)))
@@ -52,7 +52,7 @@ def plot_reconstructions(obs_env, encoder, decoder, step):
     for num_i, i in enumerate(range(0, obs_env.state_space[0], step)):
         for num_j, j in enumerate(range(0, obs_env.state_space[1], step)):
 
-            obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
+            obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float().to(device)
             obs_z = encoder(obs_x)
             obs_x_recon = decoder(obs_z)
             reconstruction = obs_x_recon.permute(2, 1, 0).detach().cpu().numpy()
