@@ -44,7 +44,7 @@ def plot_state(obs, ax):
 
     return ax
 
-def plot_reconstructions(obs_env, encoder, decoder, step, device):
+def plot_reconstructions(obs_env, encoder, decoder, step, device="cpu"):
     image_indexes0 = range(0, obs_env.state_space[0], step)
     image_indexes1 = range(0, obs_env.state_space[1], step)
     print("Number of images {} x {}".format(len(image_indexes0),len(image_indexes1)))
@@ -63,7 +63,7 @@ def plot_reconstructions(obs_env, encoder, decoder, step, device):
     return fig, axes
 
 
-def plot_environment(obs_env, step):
+def plot_environment(obs_env, step, device = "cpu"):
 
     image_indexes0 = range(0, obs_env.state_space[0], step)
     image_indexes1 = range(0, obs_env.state_space[1], step)
@@ -71,7 +71,7 @@ def plot_environment(obs_env, step):
     fig, axes = plt.subplots(len(image_indexes0), len(image_indexes1), figsize=(10, 10))
     for num_i, i in enumerate(image_indexes0):
         for num_j, j in enumerate(image_indexes1):
-            obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float()
+            obs_x = obs_env.reset([i, j]).permute(-1, 0, 1).float().to(device)
             obs_x = obs_x.permute(2, 1, 0).detach().cpu().numpy()
             if obs_x.shape[-1] != 3:
                 plot_state(obs_x[:,:,0], axes[num_i][num_j])
